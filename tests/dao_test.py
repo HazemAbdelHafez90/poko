@@ -62,3 +62,9 @@ class TestBookDao(TestCase):
         test_return_value = self.table.get_item(
             Key={'title': 'Book1', 'author': 'author1'})['Item']
         self.assertEqual(book.__dict__, test_return_value)
+
+    def test_add_book_already_exists(self):
+        book = Book('Book1', 'author1', 'date')
+        self.table.put_item(Item=book.__dict__)
+        with self.assertRaises(ValueError):
+            self.dao.add_book_dao(book.__dict__)

@@ -60,7 +60,21 @@ class TestHandler(TestCase):
         self.assertEqual(response['statusCode'], 200)
         self.assertEqual(len(json.loads(response['body'])), 2)
 
-    def test_find_multiple_books_request_failur(self):
+    def test_add_book_request_success(self):
+
+        event = {
+            "httpMethod": "POST",
+            "headers": {
+                "accept": "text/html",
+                "accept-encoding": "gzip, deflate, br",
+                "Host": "xxx.us-east-2.amazonaws.com",
+                "User-Agent": "Mozilla/5.0"
+            }, "body": "{\n    \"title\": \"book1\",\n    \"author\": \"author1\",\n    \"publication_date\": \"date2\"\n}",
+        }
+        response = handler.lambda_handler(event, None)
+        self.assertEqual(response['statusCode'], 200)
+
+    def test_find_multiple_books_request_failure(self):
 
         event = {
             "httpMethod": "GET",

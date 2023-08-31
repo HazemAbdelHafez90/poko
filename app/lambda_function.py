@@ -30,6 +30,7 @@ def lambda_handler(event, context):
 
 
 def get_books(params):
+    logger.info('Get Books ', params)
     author = params.get('author')
     title = params.get('title')
     statusCode = HTTPStatus.OK
@@ -49,6 +50,8 @@ def get_books(params):
 
 
 def add_book(body):
+    body = json.loads(body)
+    logger.debug("add book", body)
     response = {}
     statusCode = HTTPStatus.OK
     author = body.get('author')
@@ -57,7 +60,11 @@ def add_book(body):
     if (author and title and publication_date):
         try:
             book_service.add_book(title, author, publication_date)
-        except:
+        except ValueError:
+            statusCode = HTTPStatus.BAD_REQUEST
+            response = 'Book Already exists'
+        except Exception as e:
+            logger.error('Error in adding book', e)
             response = None
             statusCode = HTTPStatus.INTERNAL_SERVER_ERROR
     return {

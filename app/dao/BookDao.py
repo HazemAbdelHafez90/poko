@@ -1,4 +1,5 @@
 from boto3.dynamodb.conditions import Attr
+from botocore.exceptions import ClientError
 
 
 class BookDao:
@@ -25,4 +26,11 @@ class BookDao:
             return None
 
     def add_book_dao(self, book_dict):
-        self.book_table.put_item(Item=book_dict)
+        try:
+            self.book_table.put_item(
+                Item=book_dict,  ConditionExpression='attribute_not_exists(author)')
+        except ClientError as e:
+            if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
+                raise ValueError('Book Already exists')
+            else:
+                raise
