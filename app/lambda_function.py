@@ -3,6 +3,7 @@ from app.services.BookService import BookService
 import json
 from http import HTTPStatus
 from aws_lambda_powertools import Logger
+from app.models.Response import Response
 
 logger = Logger()
 dynamodb = boto3.resource('dynamodb')
@@ -23,10 +24,7 @@ def lambda_handler(event, context):
             return add_book(body)
     except Exception as e:
         logger.error(e)
-        return {
-            'statusCode': HTTPStatus.INTERNAL_SERVER_ERROR,
-            'body': json.dumps('Error')
-        }
+        return Response(HTTPStatus.INTERNAL_SERVER_ERROR, json.dumps('Error')).__dict__
 
 
 def get_books(params):
@@ -34,25 +32,22 @@ def get_books(params):
     author = params.get('author')
     title = params.get('title')
     statusCode = HTTPStatus.OK
-    response = None
+    result = None
     if (title):
         if (author):
-            response = book_service.get_book_by_title_and_author(author, title)
+            result = book_service.get_book_by_title_and_author(author, title)
         else:
-            response = book_service.get_books_by_title(title)
+            result = book_service.get_books_by_title(title)
         statusCode = HTTPStatus.OK
     else:
         statusCode = HTTPStatus.BAD_REQUEST
-    return {
-        'statusCode': statusCode,
-        'body': json.dumps(response)
-    }
+    return Response(statusCode, json.dumps(result)).__dict__
 
 
 def add_book(body):
     body = json.loads(body)
     logger.debug("add book", body)
-    response = {}
+    result = {}
     statusCode = HTTPStatus.OK
     author = body.get('author')
     title = body.get('title')
@@ -62,12 +57,9 @@ def add_book(body):
             book_service.add_book(title, author, publication_date)
         except ValueError:
             statusCode = HTTPStatus.BAD_REQUEST
-            response = 'Book Already exists'
+            result = 'Book Already exists'
         except Exception as e:
             logger.error('Error in adding book', e)
-            response = None
+            result = None
             statusCode = HTTPStatus.INTERNAL_SERVER_ERROR
-    return {
-        'statusCode': statusCode,
-        'body': json.dumps(response)
-    }
+    return Response(statusCode, json.dumps(result)).__dict__
