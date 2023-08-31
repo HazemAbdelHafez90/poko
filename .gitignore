@@ -1,0 +1,7 @@
+
+app.zip
+app/__pycache__/lambda_function.cpython-311.pyc
+*.pyc
+*.pyc
+*.zip
+*.pyc
