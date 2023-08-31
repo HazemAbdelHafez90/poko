@@ -36,7 +36,7 @@ class TestBookService(TestCase):
         self.assertEqual(len(test_return_value), 2)
 
     def test_find_book_by_title_and_author_success(self):
-        book = Book('Test', 'Book1', 'Publication_date')
+        book = Book('Book1', 'Test', 'Publication_date')
         self.table.put_item(Item=book.__dict__)
         test_return_value = self.service.get_book_by_title_and_author(
             'Test', 'Book1')
@@ -45,7 +45,7 @@ class TestBookService(TestCase):
 
     def test_add_book(self):
         book = Book('Book1', 'Author1', 'date')
-        self.service.add_book(book.__dict__)
+        self.service.add_book('Book1', 'Author1', 'date')
         test_return_value = self.table.get_item(
             Key={'title': 'Book1', 'author': 'Author1'})['Item']
         self.assertEqual(book.__dict__, test_return_value)

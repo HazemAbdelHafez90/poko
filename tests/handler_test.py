@@ -4,7 +4,7 @@ import boto3
 from app.models.Book import Book
 from app.dao.BookDao import BookDao
 import json
-
+from http import HTTPStatus
 import app.lambda_function as handler
 
 
@@ -60,9 +60,7 @@ class TestHandler(TestCase):
         self.assertEqual(response['statusCode'], 200)
         self.assertEqual(len(json.loads(response['body'])), 2)
 
-    def test_cannot_find_books_request_success(self):
-        self.table.put_item(Item={"title": "Book1", "author": "Test"})
-        self.table.put_item(Item={"title": "Book2", "author": "Test"})
+    def test_find_multiple_books_request_failur(self):
 
         event = {
             "httpMethod": "GET",
@@ -72,9 +70,8 @@ class TestHandler(TestCase):
                 "Host": "xxx.us-east-2.amazonaws.com",
                 "User-Agent": "Mozilla/5.0"
             }, "queryStringParameters": {
-                "title": 'Book4'
+                "": 'Book'
             },
         }
         response = handler.lambda_handler(event, None)
-        self.assertEqual(response['statusCode'], 200)
-        self.assertEqual(len(json.loads(response['body'])), 0)
+        self.assertEqual(response['statusCode'], HTTPStatus.BAD_REQUEST)

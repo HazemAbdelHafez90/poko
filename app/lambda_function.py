@@ -1,27 +1,66 @@
 import boto3
 from app.services.BookService import BookService
 import json
+from http import HTTPStatus
+from aws_lambda_powertools import Logger
 
+logger = Logger()
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('Book')
 book_service = BookService(table)
 
 
 def lambda_handler(event, context):
-    response = []
-    method = event.get('httpMethod')
-
-    if (method == 'GET'):
+    try:
+        logger.info(event)
+        method = event.get('httpMethod')
         params = event.get('queryStringParameters')
-        title = params['title']
-        response = book_service.get_books_by_title(title)
+        body = event.get('body')
 
+        if (method == 'GET'):
+            return get_books(params)
+        if (method == 'POST'):
+            return add_book(body)
+    except Exception as e:
+        logger.error(e)
+        return {
+            'statusCode': HTTPStatus.INTERNAL_SERVER_ERROR,
+            'body': json.dumps('Error')
+        }
+
+
+def get_books(params):
+    author = params.get('author')
+    title = params.get('title')
+    statusCode = HTTPStatus.OK
+    response = None
+    if (title):
+        if (author):
+            response = book_service.get_book_by_title_and_author(author, title)
+        else:
+            response = book_service.get_books_by_title(title)
+        statusCode = HTTPStatus.OK
+    else:
+        statusCode = HTTPStatus.BAD_REQUEST
     return {
-        'statusCode': 200,
+        'statusCode': statusCode,
         'body': json.dumps(response)
     }
 
 
-def get_books(params):
-    if(params['author']):
-        response = book_service.
+def add_book(body):
+    response = {}
+    statusCode = HTTPStatus.OK
+    author = body.get('author')
+    title = body.get('title')
+    publication_date = body.get('publication_date')
+    if (author and title and publication_date):
+        try:
+            book_service.add_book(title, author, publication_date)
+        except:
+            response = None
+            statusCode = HTTPStatus.INTERNAL_SERVER_ERROR
+    return {
+        'statusCode': statusCode,
+        'body': json.dumps(response)
+    }

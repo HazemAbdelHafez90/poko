@@ -1,4 +1,5 @@
 from app.dao.BookDao import BookDao
+from app.models.Book import Book
 
 
 class BookService:
@@ -11,5 +12,6 @@ class BookService:
     def get_book_by_title_and_author(self, author, title):
         return self.dao.get_book_by_title_and_author_dao(author, title)
 
-    def add_book(self, book_dict):
-        self.dao.add_book_dao(book_dict)
+    def add_book(self, title, author, publication_date):
+        book = Book(title, author, publication_date)
+        self.dao.add_book_dao(book.__dict__)
