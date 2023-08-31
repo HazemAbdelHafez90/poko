@@ -8,11 +8,20 @@ book_service = BookService(table)
 
 
 def lambda_handler(event, context):
-    print(event)
-    print(response)
-    response = book_service.get_book()
+    response = []
+    method = event.get('httpMethod')
+
+    if (method == 'GET'):
+        params = event.get('queryStringParameters')
+        title = params['title']
+        response = book_service.get_books_by_title(title)
 
     return {
         'statusCode': 200,
         'body': json.dumps(response)
     }
+
+
+def get_books(params):
+    if(params['author']):
+        response = book_service.
