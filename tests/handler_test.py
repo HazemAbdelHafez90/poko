@@ -89,3 +89,22 @@ class TestHandler(TestCase):
         }
         response = handler.lambda_handler(event, None)
         self.assertEqual(response['statusCode'], HTTPStatus.BAD_REQUEST)
+
+    def test_add_book_request_missing_parameters(self):
+
+        event = {
+            "httpMethod": "POST",
+            "headers": {
+                "accept": "text/html",
+                "accept-encoding": "gzip, deflate, br",
+                "Host": "xxx.us-east-2.amazonaws.com",
+                "User-Agent": "Mozilla/5.0"
+            }, "queryStringParameters": {
+                "": 'Book'
+            }, "body": "{\n    \"\": \"book1\",\n    \"author\": \"author1\",\n    \"publication_date\": \"date2\"\n}",
+
+        }
+        response = handler.lambda_handler(event, None)
+        self.assertEqual(response['statusCode'], HTTPStatus.BAD_REQUEST)
+        self.assertEqual("Something worng with the paramters",
+                         json.loads(response['body']))
