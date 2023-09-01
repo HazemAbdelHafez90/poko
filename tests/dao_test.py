@@ -22,6 +22,12 @@ class TestBookDao(TestCase):
         self.dao = BookDao(self.table)
 
     def test_find_book_by_title_success(self):
+        self.table.put_item(Item={"title": "the new book", "author": "Test"})
+        test_return_value = self.dao.get_book_by_title_dao('new')
+        # Test
+        self.assertEqual(len(test_return_value), 1)
+
+    def test_find_book_title_success(self):
         self.table.put_item(Item={"title": "Book1", "author": "Test"})
         test_return_value = self.dao.get_book_by_title_dao('Book1')
         # Test
@@ -34,12 +40,21 @@ class TestBookDao(TestCase):
         # Test
         self.assertEqual(len(test_return_value), 2)
 
+    def test_return_empty_list_by_title_book_success(self):
+        self.table.put_item(Item={"title": "Book1", "author": "Test"})
+        self.table.put_item(Item={"title": "Book2", "author": "Test"})
+        test_return_value = self.dao.get_book_by_title_dao('Book')
+        # Test
+        self.assertEqual(len(test_return_value), 2)
+
     def test_cannot_find_book_by_title_success(self):
-        self.table.put_item(Item={"title": "Book3", "author": "Test"})
+        self.table.put_item(Item={"title": "the new book", "author": "Test"})
         test_return_value = self.dao.get_book_by_title_dao('Book2')
         # Test
         self.assertEqual(len(test_return_value), 0)
 
+<<<<<<< HEAD
+=======
     def test_find_book_by_title_and_author_success(self):
         book = Book('Book3', 'Test', 'publication_date')
         self.table.put_item(Item=book.__dict__)
@@ -66,6 +81,7 @@ class TestBookDao(TestCase):
         # Test
         self.assertEqual(test_return_value, None)
 
+>>>>>>> b9abbe58fdaf60cacc24df3bc18504080db0e80f
     def test_add_book(self):
         book = Book('Book1', 'author1', 'date')
         self.dao.add_book_dao(book.__dict__)

@@ -6,5 +6,13 @@ app/__pycache__/lambda_function.cpython-311.pyc
 *.zip
 *.pyc
 *.pyc
+<<<<<<< Updated upstream
 *.pyc
 *.zip
+=======
+<<<<<<< HEAD
+=======
+*.pyc
+*.zip
+>>>>>>> b9abbe58fdaf60cacc24df3bc18504080db0e80f
+>>>>>>> Stashed changes

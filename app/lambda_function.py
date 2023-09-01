@@ -29,6 +29,13 @@ def lambda_handler(event, context):
 
 def get_books(params):
     logger.info('Get Books ', params)
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+    title = params.get('title')
+=======
+>>>>>>> b9abbe58fdaf60cacc24df3bc18504080db0e80f
+>>>>>>> Stashed changes
     statusCode = HTTPStatus.OK
     result = None
     if (params):
@@ -38,13 +45,17 @@ def get_books(params):
         result = book_service.list_all_books()
         return Response(statusCode, json.dumps(result)).__dict__
     if (title):
+<<<<<<< HEAD
+        result = book_service.get_books_by_title(title)
+=======
         if (author):
             result = [book_service.get_book_by_title_and_author(author, title)]
         else:
             result = book_service.get_books_by_title(title)
+>>>>>>> b9abbe58fdaf60cacc24df3bc18504080db0e80f
         statusCode = HTTPStatus.OK
     else:
-        statusCode = HTTPStatus.BAD_REQUEST
+        result = []
     return Response(statusCode, json.dumps(result)).__dict__
 
 

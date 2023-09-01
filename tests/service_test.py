@@ -35,13 +35,24 @@ class TestBookService(TestCase):
         # Test
         self.assertEqual(len(test_return_value), 2)
 
+<<<<<<< HEAD
+    def test_find_empty_list_by_title_success(self):
+        self.table.put_item(Item={"title": "The first book", "author": "Test"})
+        self.table.put_item(
+            Item={"title": "the second book", "author": "Test"})
+        test_return_value = self.service.get_books_by_title('')
+=======
     def test_find_book_by_title_and_author_success(self):
         book = Book('book1', 'test', 'Publication_date')
         self.table.put_item(Item=book.__dict__)
         test_return_value = self.service.get_book_by_title_and_author(
             'Test', 'book1')
+<<<<<<< Updated upstream
+=======
+>>>>>>> b9abbe58fdaf60cacc24df3bc18504080db0e80f
+>>>>>>> Stashed changes
         # Test
-        self.assertEqual(test_return_value, book.__dict__)
+        self.assertEqual(len(test_return_value), 0)
 
     def test_add_book(self):
         book = Book('book1', 'author1', 'date')

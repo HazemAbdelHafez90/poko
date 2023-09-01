@@ -105,6 +105,10 @@ class TestHandler(TestCase):
             },
         }
         response = handler.lambda_handler(event, None)
+<<<<<<< HEAD
+        self.assertEqual(response['statusCode'], HTTPStatus.OK)
+        self.assertEqual(len(json.loads(response['body'])), 0)
+=======
         self.assertEqual(response['statusCode'], HTTPStatus.BAD_REQUEST)
 
     def test_find_multiple_books_request_failure(self):
@@ -139,3 +143,7 @@ class TestHandler(TestCase):
         self.assertEqual(response['statusCode'], HTTPStatus.BAD_REQUEST)
         self.assertEqual("Something worng with the paramters",
                          json.loads(response['body']))
+<<<<<<< Updated upstream
+=======
+>>>>>>> b9abbe58fdaf60cacc24df3bc18504080db0e80f
+>>>>>>> Stashed changes
