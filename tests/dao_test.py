@@ -22,6 +22,12 @@ class TestBookDao(TestCase):
         self.dao = BookDao(self.table)
 
     def test_find_book_by_title_success(self):
+        self.table.put_item(Item={"title": "the new book", "author": "Test"})
+        test_return_value = self.dao.get_book_by_title_dao('new')
+        # Test
+        self.assertEqual(len(test_return_value), 1)
+
+    def test_find_book_title_success(self):
         self.table.put_item(Item={"title": "Book1", "author": "Test"})
         test_return_value = self.dao.get_book_by_title_dao('Book1')
         # Test
@@ -34,37 +40,18 @@ class TestBookDao(TestCase):
         # Test
         self.assertEqual(len(test_return_value), 2)
 
-    def test_cannot_find_book_by_title_success(self):
-        self.table.put_item(Item={"title": "Book3", "author": "Test"})
-        test_return_value = self.dao.get_book_by_title_dao('Book2')
-        # Test
-        self.assertEqual(len(test_return_value), 0)
-
-    def test_find_book_by_title_and_author_success(self):
-        book = Book('Book3', 'Test', 'publication_date')
-        self.table.put_item(Item=book.__dict__)
-        test_return_value = self.dao.get_book_by_title_and_author_dao(
-            'Test', 'Book3')
-        # Test
-        self.assertEqual(test_return_value, book.__dict__)
-
-    def test_find_book_by_title_and_author_success(self):
-        book = Book('Book3', 'Test', 'publication_date')
-        book2 = Book('Book2', 'Test', 'publication_date')
-
-        self.table.put_item(Item=book.__dict__)
-        self.table.put_item(Item=book2.__dict__)
-        test_return_value = self.dao.list_all_books_dao()
+    def test_return_empty_list_by_title_book_success(self):
+        self.table.put_item(Item={"title": "Book1", "author": "Test"})
+        self.table.put_item(Item={"title": "Book2", "author": "Test"})
+        test_return_value = self.dao.get_book_by_title_dao('Book')
         # Test
         self.assertEqual(len(test_return_value), 2)
 
-    def test_cannot_find_book_by_title_and_author_success(self):
-        book = Book('Book3', 'Test', 'publication_date')
-        self.table.put_item(Item=book.__dict__)
-        test_return_value = self.dao.get_book_by_title_and_author_dao(
-            'Test1', 'Book3')
+    def test_cannot_find_book_by_title_success(self):
+        self.table.put_item(Item={"title": "the new book", "author": "Test"})
+        test_return_value = self.dao.get_book_by_title_dao('Book2')
         # Test
-        self.assertEqual(test_return_value, None)
+        self.assertEqual(len(test_return_value), 0)
 
     def test_add_book(self):
         book = Book('Book1', 'author1', 'date')

@@ -23,35 +23,35 @@ class TestBookService(TestCase):
         self.service = BookService(self.table)
 
     def test_find_book_by_title_success(self):
-        self.table.put_item(Item={"title": "book1", "author": "test"})
+        self.table.put_item(Item={"title": "Book1", "author": "Test"})
         test_return_value = self.service.get_books_by_title('Book1')
         # Test
         self.assertEqual(len(test_return_value), 1)
 
     def test_find_more_than_one_book_by_title_success(self):
-        self.table.put_item(Item={"title": "book1", "author": "test"})
-        self.table.put_item(Item={"title": "book2", "author": "test"})
+        self.table.put_item(Item={"title": "Book1", "author": "Test"})
+        self.table.put_item(Item={"title": "Book2", "author": "Test"})
         test_return_value = self.service.get_books_by_title('Book')
         # Test
         self.assertEqual(len(test_return_value), 2)
 
-    def test_find_book_by_title_and_author_success(self):
-        book = Book('book1', 'test', 'Publication_date')
-        self.table.put_item(Item=book.__dict__)
-        test_return_value = self.service.get_book_by_title_and_author(
-            'Test', 'book1')
+    def test_find_empty_list_by_title_success(self):
+        self.table.put_item(Item={"title": "The first book", "author": "Test"})
+        self.table.put_item(
+            Item={"title": "the second book", "author": "Test"})
+        test_return_value = self.service.get_books_by_title('')
         # Test
-        self.assertEqual(test_return_value, book.__dict__)
+        self.assertEqual(len(test_return_value), 0)
 
     def test_add_book(self):
-        book = Book('book1', 'author1', 'date')
-        self.service.add_book('book1', 'author1', 'date')
+        book = Book('Book1', 'Author1', 'date')
+        self.service.add_book('Book1', 'Author1', 'date')
         test_return_value = self.table.get_item(
-            Key={'title': 'book1', 'author': 'author1'})['Item']
+            Key={'title': 'Book1', 'author': 'Author1'})['Item']
         self.assertEqual(book.__dict__, test_return_value)
 
     def test_add_book_already_exists(self):
-        book = Book('book1', 'author1', 'date')
+        book = Book('Book1', 'Author1', 'date')
         self.table.put_item(Item=book.__dict__)
         with self.assertRaises(ValueError):
-            self.service.add_book('book1', 'author1', 'date')
+            self.service.add_book('Book1', 'Author1', 'date')

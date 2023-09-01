@@ -29,22 +29,14 @@ def lambda_handler(event, context):
 
 def get_books(params):
     logger.info('Get Books ', params)
+    title = params.get('title')
     statusCode = HTTPStatus.OK
     result = None
-    if (params):
-        author = params.get('author')
-        title = params.get('title')
-    else:
-        result = book_service.list_all_books()
-        return Response(statusCode, json.dumps(result)).__dict__
     if (title):
-        if (author):
-            result = [book_service.get_book_by_title_and_author(author, title)]
-        else:
-            result = book_service.get_books_by_title(title)
+        result = book_service.get_books_by_title(title)
         statusCode = HTTPStatus.OK
     else:
-        statusCode = HTTPStatus.BAD_REQUEST
+        result = []
     return Response(statusCode, json.dumps(result)).__dict__
 
 
@@ -66,7 +58,4 @@ def add_book(body):
             logger.error('Error in adding book', e)
             result = None
             statusCode = HTTPStatus.INTERNAL_SERVER_ERROR
-    else:
-        result = "Something worng with the paramters"
-        return Response(HTTPStatus.BAD_REQUEST, json.dumps(result)).__dict__
     return Response(statusCode, json.dumps(result)).__dict__

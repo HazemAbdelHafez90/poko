@@ -7,18 +7,9 @@ class BookDao:
         self.book_table = table
 
     def get_book_by_title_dao(self, name):
-        result = self.book_table.scan(FilterExpression=Attr(
-            'title').begins_with(name), ConsistentRead=True).get('Items')
-        return result
-
-    def list_all_books_dao(self):
-        result = self.book_table.scan().get('Items')
-        return result
-
-    def get_book_by_title_and_author_dao(self, author, title):
-        result = self.book_table.get_item(
-            Key={'author': author, 'title': title}).get('Item')
-        return result
+        books = self.book_table.scan(
+            FilterExpression=Attr('title').contains(name), ConsistentRead=True).get('Items')
+        return books
 
     def add_book_dao(self, book_dict):
         try:
